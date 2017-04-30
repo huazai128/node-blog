@@ -1,0 +1,39 @@
+module.exports = (() => {
+    //加载文章集合
+    let createTextList = (name,data,parent) => {
+        $(
+            '<div class="post-preview">' +
+			'<a href="/article/' + data._id + '">' +
+			'<h2 class="post-title">' + data.title + '</h2>' +
+			'<div class="post-content-preview">' + data.text + '</div>' +
+			'</a>' +
+			'<p class="post-meta">' +
+			'Posted by' +
+			' <a href="/author/' + data.author._id + '">' + name + '</a>' +
+			' on ' + data.meta.updateTime +
+			'<span>' + data.pv + '浏览</span>' +
+			'</p>' +
+			'</div>' +
+			'<hr />').appendTo($(parent)).hide().show("slow"); //$(content).appendTo(select);//追加
+    };
+    //加载更多文章
+    let getTextMore = (page,btn,url,parent) => {
+        let showmore,time,name;
+        $.ajax({
+            type:"GET",
+            url: url + page.value
+        }).done((results) => {
+            showmore = results.showmore;
+            results.articles.forEach((article,index) => {
+                if(article.author.name){
+
+                }else{
+
+                }
+            })
+        })
+    }
+    return {
+        getTextMore:getTextMore
+    }
+})

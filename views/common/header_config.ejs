@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <meta http-equiv="Cache-Control" content="no-transform " />
+    <meta name="keywords" content="web前端开发，html5，css，javascript，node" />
+    <title>Title</title>
+    <%- include head %>
+</head>
+<body class="blog_xh">
+    <header role="banner">
+        <nav class="nvabar navbar-fixed-top navbar-default navself">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button class="navbar-toggle pull-left collapsed" type="button"  data-toggle="collapse" data-target="#header-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <h4 class="navbar-left header_headline">
+                    <a href="/">ioopsd</a>
+                </h4>
+                <div class="navbar-collapse navbar_center collapse" id="header-navbar-collapse-1" aria-expanded="false">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <form class="navbar-form" method="GET" action="/results">
+                                <div class="input-group">
+                                    <input type="text" class="form-control header_search" size="40" name="q">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary header_search_btn" type="submit">文章名</button>
+                                    </span>
+                                </div>
+                            </form>
+                        </li>
+                        <% if (true) { %>
+                            <li class="miss_btn">
+                                <span class="header_link">
+                                    <a href="" title="我的文章" href="">发表文章</a>
+                                </span>
+                            </li>
+                            <li class="miss_btn">
+                                <span class="header_link">
+                                    <a href="" class="navbar-link" title="我的文章">我的文章</a>
+                                </span>
+                            </li>
+                            <li class="miss_btn">
+                                <span class="header_link">
+                                    <a href=""  class="navbar-link" title="个人中心">个人中心</a>
+                                </span>
+                            </li>
+                            <% if(user.role > 50) { %>
+                                <li class="miss_btn">
+                                    <span class="header_link">
+                                        <a   title="管理中心" href="">管理中心</a>
+                                    </span>
+                                </li>
+                            <% } %>
+
+                            <li class="miss_btn">
+                                <span class="header_link">
+                                    <a href="" class="退出">退出</a>
+                                </span>
+                            </li>
+                    </ul>
+                    <div class="menu_btn">
+                        <a class="blog_p0">
+                            <% if(true) { %>
+                                <img class="header_icon" src="/upload/">
+                            <% }else{ %>
+                                <img class="header_icon" src="">
+                            <% } %>
+                        </a>
+                        <div class="menu_profile clearfix">
+                            <div class="menu_info">
+                                <span>huazai</span>
+                            </div>
+                            <% if(false) { %>
+                                <div class="menu_info">
+                                    <a href="">管理中心</a>
+                                </div>
+                            <% } %>
+                            <ul class="menu_number clearfix">
+                                <li>
+                                    <span >
+                                        <a  title="我的文章" href="/admin/article/author/" >我的文章</a>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span >
+                                        <a  title="我的文章" href="/admin/article/post">发表文章</a>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span >
+                                        <a  title="个人中心" href="/admin/user/setprofile">个人中心</a>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span >
+                                        <a  title="退出" href="/api/user/logout">退出</a>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <li class="blog_ml300">
+                            <span>
+                                <a  class="header_link" title="登录" href="/user/login">登录</a>
+                            </span>
+                        </li>
+                        <li>
+                            <span>
+                                <a class="reg_btn"  title="注册" href="/user/reg">注册</a>
+                            </span>
+                        </li>
+                    <% } %>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="header_github">
+        <div class="header_github_fork">
+            <a href="https://github.com/huazai128/node-blog" target="_blank">Star me on GitHub</a>
+        </div>
+    </div>
