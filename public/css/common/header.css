@@ -283,3 +283,6 @@ a:hover, a:visited, a:active, a:link{
 	transform: rotate(360deg);
 	transition: all 1000ms ease-in-out;
 }
+canvas{
+	margin-top: 50px !important;
+}

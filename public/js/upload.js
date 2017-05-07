@@ -1,3 +1,5 @@
+require("../css/manager.css");
+let $ = require("jquery");
 $(() => {
     let img = document.getElementById("img");
     //判断浏览器是非支持HTML5上传
@@ -33,7 +35,7 @@ $(() => {
         //加载
         xhr.onload = () => {
             let data = JSON.parse(this.responseText);
-            console.log(data);
+            console.log("=======");
             message.innerHTML = "上传成功";
             $("#upload_img img").attr("src",data.path);
         }
@@ -65,44 +67,35 @@ $(() => {
     });
 
     //点击上传
-    $("#upload_img .btn").on("click",(ev) => {
-        let e = ev || window.event;
-        e.preventDefault();  //取消事件默认行为
-        if(!img.files[0]){
-            $(".upload_info").html("请选择上传图片");
-            $(".upload_info").show();
-            return;
-        }else{
-            $(".upload_info").html("");
-            $(".upload_info").hide();
-        }
-        let xhr = new XMLHttpRequest();
-        //上传成功调用
-        xhr.onload = function(){
-			console.log(this.responseText);
+    $('#upload_img .btn').on('click', ev => {
+		let e = ev || event;
+		e.preventDefault();
+
+		let xhr = new XMLHttpRequest();
+		xhr.onload = function () {
 			let data = JSON.parse(this.responseText);
 			$('#upload_img img').attr('src', data.path);
 		}
-        //开始上传
-        xhr.upload.onloadstart = () => {
-            console.log("开始上传");
-        }
-        //上传进度
-        xhr.upload.onprogress = (ev) => {
-            console.log("上传进度:" + ev.loaded + "/" + ev.total);
-            let a = ev.loaded / ev.total;
-            $("#upload_img .progress-bar").css({width: parseInt(a * 100) + "%"});
-            $("#upload_img .progress-bar").html(parseInt(a * 100) + "%");
-        }
-        //上传完成
-        xhr.upload.onload = () => {
-            console.log('上传完成');
-			$('#upload_img .progress-bar').css('width','200px');
+		xhr.open('post', '/api/main/avator', true);
+
+		//xhr.upload : 上传进度对象
+		xhr.upload.onloadstart = () => {
+			console.log('开始上传');
+		}
+		xhr.upload.onprogress = ev => {
+			console.log('正在上传：' + ev.loaded + ' / ' + ev.total);
+
+			let a = ev.loaded / ev.total;
+			$('#upload_img .progress-bar').css('width', (a * 100) + '%');
+			$('#upload_img .progress-bar').html(parseInt(a * 100) + '%');
+		}
+		xhr.upload.onload = () => {
+			console.log('上传完成');
+			$('#upload_img .progress-bar').css('width', (100 + '%'));
 			$('#upload_img .progress-bar').html('上传完成');
-        }
-        xhr.open("post","/api/main/avator",true);
-        let form = new FormData();
-		form.append('f', img.files[0]);
-		xhr.send(form);
-    });
+		}
+		let fd = new FormData();
+		fd.append('f', img.files[0]);
+		xhr.send(fd);
+	})
 })

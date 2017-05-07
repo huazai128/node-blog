@@ -201,6 +201,47 @@ router.get("/article/tag/:id",(req,res) => {
     })  
 })
 
+//搜索结果
+router.get("/results",(req,res,next) => {
+    let q = req.query.q,
+        page = parseInt(req.query.p,10) || 0,
+        len;
+    const count = 6;
+    let index = page * count;
+    async.parallel([
+        function(done){
+            db.Article.count((err,count) => {
+                done(err,count);
+            })
+        },
+        function(done){
+            db.Tag.find({}).exec((err,tags) => {
+                done(err,tags);
+            })
+        },
+        function(done){
+            db.Article.find({title: new RegExp(q + ".*","i")})
+            .limit(count)
+            .skip(index)
+            .exec((err,articles) => {
+                done(err,articles)
+            })
+        }
+    ],function(err,results){
+        if(err){
+            console.log(err);
+            return res.redirect("/");
+        }
+        console.log(results[1])
+        res.render("result",{
+            title:"搜索 "+ q + " 结果",
+            len:results[0],
+            tags:results[1],
+            page:page,
+            articles:results[2]
+        })
+    })
+})
 
 
 module.exports = router;

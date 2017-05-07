@@ -2,7 +2,8 @@ const express = require("express"),
     router = express.Router(),
     db = require("../../module");
     marked = require("marked");  //解析器和编译器
-    _ = require("underscore");  //
+    _ = require("underscore");  //js工具类
+
 //POST注册
 router.post("/reg",(req,res,next) => {
     let user = new db.User();
@@ -12,10 +13,9 @@ router.post("/reg",(req,res,next) => {
     user.password = data.password;
     user.confirmpwd = data.confirmpwd;
     user.head = "http://7xsn9b.com1.z0.glb.clouddn.com/" + Math.ceil(7 * Math.random()) + ".jpg";
+    //注册
     user.register().then(function(user){
         console.log("登录成功");
-        user = user.toObject();
-        delete user.password;
         req.session.user = user;
         res.redirect("/");// 重定向
     }).catch(function(err){
@@ -49,11 +49,13 @@ router.post("/reg",(req,res,next) => {
         })
     })
 });
+
 //POST登录
 router.post("/login",(req,res,next) => {
     let data = req.body.user,
         _name = data.name,
         _password = data.password;
+    console.log(_password);
     db.User.findOne({name:_name},(err,user) => {
         if(err){
             console.log(err);
@@ -62,7 +64,7 @@ router.post("/login",(req,res,next) => {
         if(!user){
             return res.render("login",{
                 title:"登录",
-                message:"用户不存在"
+                message:"密码或用户错误"
             })
         }
         user.comparePassword(_password,(err,info) => {
@@ -70,22 +72,17 @@ router.post("/login",(req,res,next) => {
                 console.log(err);
                 return res.redirect("/user/login");
             }
-            user.comparePassword(_password, (err, isMatch) => {
-                if (err) {
-                    console.log(err);
-                    return res.redirect('/user/login');
-                }
-                console.log(isMatch);
-                if (isMatch) {
-                    req.session.user = user;
-                    return res.redirect('/');
-                } else {
-                    res.render('login', {
-                        title: '登录',
-                        message: '密码错误'
-                    })
-                }
-            })
+            if(info){
+                req.session.user = user;
+                user = user.toObject();
+                delete user.password;
+                return res.redirect("/");
+            }else{
+                res.render("login",{
+                    title:"登录",
+                    message:"密码或用户错误"
+                })
+            }
         })
     })
 });
@@ -98,5 +95,67 @@ router.get("/logout",(req,res,next) => {
     })
 })
 
+
+//验证用户名是否注册
+router.get("/username",(req,res,next) => {
+    let username = req.query.username;
+    let user = new db.User();
+    user.name = username;
+    if(!user.verifyUsername){ //用户格式
+        res.json({
+            errorCode:1,
+            message:"用户名格式不对"
+        })
+    }
+    user.getUserInfoByUsername(username).then((user) => {
+        if(user){
+            res.json({
+                errorCode:2,
+                message:"用户名已存在"
+            })
+        }else{
+            res.json({
+                errorCode:0,
+                message:"验证成功"
+            })
+        }
+    }).catch((err) => {
+        res.json({
+            errorCode:3,
+            message:err
+        })
+    })
+})
+
+//验证email是否注册
+router.get("/email",(req,res,next) => {
+    let email = req.query.email;
+    let user = new db.User();
+    user.email = email
+    if(!user.verifyEmail){ //email格式不对
+        res.json({
+            errorCode:1,
+            message:"邮箱格式不对"
+        })
+    }
+    user.getUserInfoByEmail(email).then((user) => {
+        if(user){
+            res.json({
+                errorCode: 2,
+                message:"邮箱已注册"
+            })
+        }else{
+            res.json({
+                errorCode:0,  // 0 为false
+                message:"验证成功"
+            })
+        }
+    }).catch((err) => {
+        res.json({
+            errorCode:3,
+            message:err
+        })
+    })
+})
 
 module.exports = router;

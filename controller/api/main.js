@@ -12,8 +12,7 @@ const db = require("../../module");
 let storage = multer.diskStorage({ //使用磁盘存储引擎来控制文件的存储
     //保存路径
     destination: function (req, file, cb) {
-        console.log(file);
-		cb(null, '../../public/uploads');//创建文件目录
+		cb(null, '../../public/upload');//创建文件目录
 	},
     //上传文件名
     filename:function(req,file,cb){
@@ -25,6 +24,7 @@ let storage = multer.diskStorage({ //使用磁盘存储引擎来控制文件的�
 let upload = multer({
 	storage: storage
 });
+
 upload = upload.single('f');
 
 
@@ -287,8 +287,9 @@ router.post("/signature",(req,res,next) => {
 });
 
 //上传照片
-router.post('/avator', (req, res, next) => {
-	upload(req,res,(err,file) => {
+router.post('/avator', (req, res) => {
+    console.log(req.files);
+	upload(req,res,(errs) => {
         //console.log(req.file);//为什么获取不到前台提交的数据
 		db.User.findOne({_id: req.session.user._id})
 			.exec((err, user) => {
@@ -363,6 +364,75 @@ router.post("/pwd",(req,res,next) => {
             }
         })
     })
+})
+
+//根据文章ID删除；
+router.delete("/delete",(req,res,next) => {
+    let id = req.query.id;
+    if(id){
+        //根据当前文章ID查询数据
+        db.Article.findById({_id:id}).then((article) => {
+            //根据文章中保存的用户ID来查询用户数据
+            db.User.findById({_id:article.author}).exec((err,user) =>{
+                //判断是否为当前用户
+                if(req.session.user._id !== user.id && req.session.user.role < 50){
+                    return res.redirect("back");
+                }
+                //遍历当前用户下所有的文章
+                for(let i = 0;i < user.articles.length;i++) {
+                    //如果和当前文章ID相等删除
+                    if(user.articles[i].toString() ==  article._id){
+                        user.articles.splice(i,1);//
+                        break;
+                    }
+                }
+                //重新保存数据
+                user.save(() =>{
+                    if(err){
+                        console.log(err);
+                    }
+                })
+            })
+            return article;
+        }).then((article) => {
+            //根据文章ID查询tag数据
+            db.Tag.findById({_id:article.tag}).exec((err,tag) => {
+                //遍历当前标签下所有文章
+                for(let i = 0;i < tag.articles.length;i++){
+                    if(tag.articles[i] == article._id){ //相同删除
+                        tag.articles[i].splice(i,1);
+                        break;
+                    }
+                }
+                //判断当前标签下是否有文章
+                if(!tag.articles.length){
+                    db.Tag.remove({_id:tag._id}).exec((err,tag) => {
+                        if(err){
+                            console.log(err);
+                        }
+                    })
+                }else{
+                    tag.save((err,tag) => {
+                        if(err){
+                            console.log(err);
+                        }
+                    })
+                }
+                
+            })
+        }).then(() => {
+            //删除文章
+            db.Article.findByIdAndRemove({_id:id}).exec((err,article) => {
+                if(err){
+                    console.log(err)
+                }else{
+                    res.json({
+                        success: true
+                    })
+                }
+            })
+        })
+    }
 })
 
 module.exports = router;

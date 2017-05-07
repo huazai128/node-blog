@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2">
                     <h1 class="header_title">
-                        标题
+                        <%= title %>
                     </h1>
                 </div>
             </div>
@@ -16,9 +16,11 @@
     <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2">
             <span class="blog_fl blog_cw">常用标签</span>
-            <span class="blog_tag_link">
-                <a href="/article/tag/"></a>
-            </span>
+            <% tags.forEach(function(tag,index){ %>
+                <span class="blog_tag_link">
+                    <a href="/article/tag/<%= tag._id %>"><%= tag.name %></a>
+                </span>
+            <% }) %>
         </div>
     </div>
 </div>
@@ -28,14 +30,16 @@
 <article class="blog_result_content">
     <div class="container">
         <div class="row">
-            <figure class="col-lg-4 col-md-6 col-sm-6">
-                <a class="thumbnail blog_tag_article" href="/article/">
-                    <img src="/images/tag.jpg">
-                    <figcaption class="caption">
-                        <h5></h5>
-                    </figcaption>
-                </a>
-            </figure>
+            <% articles.forEach(function(article,index){ %>
+                <figure class="col-lg-4 col-md-6 col-sm-6">
+                    <a class="thumbnail blog_tag_article" href="/article/<%= article._id %>">
+                        <img src="/images/tag<%= index%3+1 %>.jpg">
+                        <figcaption class="caption">
+                            <h5><%= article.title %></h5>
+                        </figcaption>
+                    </a>
+                </figure>
+            <% }) %>
         </div>
     </div>
 </article>

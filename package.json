@@ -4,8 +4,11 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=dev nodemon --watch app --exec  node app.js"
+    "build": "webpack",
+    "start": "cross-env NODE_ENV=dev nodemon --watch app --exec  node app.js",
+    "start:HMR": "webpack --config webpack.config.js & cross-env NODE_ENV=dev nodemon --watch app --exec  node app.js",
+    "start:prod": "webpack --config webpack.pro.js -p & cross-env NODE_ENV=production node app.js",
+    "test": "mocha-webpack --webpack-config webpack.config-test.js \"test/**/*.test.js\""
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +19,7 @@
     "body-parser": "^1.17.1",
     "connect-mongo": "^1.3.2",
     "cookie-parser": "^1.4.3",
+    "dateformat": "^2.0.0",
     "express": "^4.15.2",
     "express-session": "^1.15.1",
     "http": "0.0.0",
@@ -27,7 +31,7 @@
     "reload": "^1.1.1",
     "serve-favicon": "^2.4.1",
     "underscore": "^1.8.3",
-    "webpack": "^2.2.1"
+    "webpack": "^2.4.1"
   },
   "devDependencies": {
     "babel-core": "^6.10.4",
