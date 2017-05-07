@@ -7,6 +7,7 @@ $(() => {
 		},
 		page = 1,
 		q = window.location.href.split('?')[1].split('=')[1];
+        console.log("====");
 	$(window).on('scroll', () => {
 		if ($('.blog_result_content figure:last').get(0).getBoundingClientRect().top <= $(window).innerHeight() && flag.value) {
 			flag.value = false;

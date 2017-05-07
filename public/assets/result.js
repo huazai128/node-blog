@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "e2017086904c7fe98f9b"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c712ed7ea1632a874e71"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -238,7 +238,7 @@
 /******/ 				};
 /******/ 			});
 /******/ 			hotUpdate = {};
-/******/ 			var chunkId = 3;
+/******/ 			var chunkId = 1;
 /******/ 			{ // eslint-disable-line no-lone-blocks
 /******/ 				/*globals chunkId */
 /******/ 				hotEnsureUpdateChunk(chunkId);
@@ -704,7 +704,7 @@
 /******/ 	__webpack_require__.h = function() { return hotCurrentHash; };
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return hotCreateRequire(159)(__webpack_require__.s = 159);
+/******/ 	return hotCreateRequire(160)(__webpack_require__.s = 160);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1160,10 +1160,24 @@ var isArray = Array.isArray || function (xs) {
 "use strict";
 
 
-__webpack_require__(156);
+__webpack_require__(157);
 var $ = __webpack_require__(2);
-
-$(function () {});
+var imgAjax = __webpack_require__(151);
+$(function () {
+	var flag = {
+		value: true
+	},
+	    page = 1,
+	    q = window.location.href.split('?')[1].split('=')[1];
+	console.log("====");
+	$(window).on('scroll', function () {
+		if ($('.blog_result_content figure:last').get(0).getBoundingClientRect().top <= $(window).innerHeight() && flag.value) {
+			flag.value = false;
+			imgAjax.getImgMore(flag, page, '/api/showmore/results?q=' + q + '&p=', '.blog_result_content .row');
+			page++;
+		}
+	});
+});
 
 /***/ }),
 
@@ -1257,7 +1271,54 @@ var objectKeys = Object.keys || function (obj) {
 
 /***/ }),
 
-/***/ 156:
+/***/ 151:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+
+module.exports = function () {
+	var createImgList = function createImgList(index, data, parent) {
+		$('<figure class="col-lg-4 col-md-6 col-sm-6">' + '<a href="/article/' + data._id + '" class="thumbnail blog_tag_article">' + '<img src="/images/tag' + index + '.jpg">' + '<figcaption class="caption">' + '<h5>' + data.title + '</h5>' + '</figcaption>' + '</a>' + '</figure>').appendTo($(parent)).css({
+			'marginTop': '200px',
+			'opacity': 0
+		}).animate({
+			'marginTop': 0,
+			'opacity': 1
+		}, 1200);;
+	};
+
+	var getImgMore = function getImgMore(flag, page, url, parent) {
+		var showmore = void 0,
+		    index = void 0;
+		$.ajax({
+			type: 'GET',
+			url: url + page
+		}).done(function (results) {
+			showmore = results.showmore;
+
+			if (!results.articles.length) {
+				return;
+			}
+			console.log(22222);
+			results.articles.forEach(function (article, index) {
+				index = index % 3 + 1;
+				createImgList(index, article, parent);
+			});
+
+			flag.value = true;
+		});
+	};
+
+	return {
+		getImgMore: getImgMore
+	};
+}();
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ }),
+
+/***/ 157:
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
@@ -1284,17 +1345,6 @@ if(true) {
 
 /***/ }),
 
-/***/ 159:
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(6);
-__webpack_require__(22);
-__webpack_require__(149);
-module.exports = __webpack_require__(7);
-
-
-/***/ }),
-
 /***/ 16:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1303,6 +1353,17 @@ module.exports = __webpack_require__(7);
 
 exports.decode = exports.parse = __webpack_require__(14);
 exports.encode = exports.stringify = __webpack_require__(15);
+
+/***/ }),
+
+/***/ 160:
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(6);
+__webpack_require__(22);
+__webpack_require__(149);
+module.exports = __webpack_require__(7);
+
 
 /***/ }),
 
