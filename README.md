@@ -101,3 +101,8 @@ manager: '/manager'
 5. 浏览器兼容性;
 6. 完善网站功能;
 7. 优化项目代码;
+
+效果展示：
+-------
+<img src="https://github.com/huazai128/node-blog/blob/master/public/images/index01.jpeg">
+<img src="https://github.com/huazai128/node-blog/blob/master/public/images/index02.jpeg">
